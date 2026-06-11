@@ -54,18 +54,18 @@ public class AuthenticationService {
         return accountRepository.findAccountByLoginToken(token).isPresent();
     }
 
-    public ResponseEntity<String> registrateUser(RegisterDto registerDto) {
+    public HttpStatus registrateUser(RegisterDto registerDto) {
         if (accountRepository.findAccountByEmail(registerDto.email()).isEmpty() && !registrationService.mailExists(registerDto.email())) {
             String passwordHash = passwordEncoder.encode(registerDto.password());
             UUID registrationToken = registrationService.startRegistration(registerDto, passwordHash);
             mailService.sendRegistrationVerification(registerDto.email(), registrationToken);
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
+            return HttpStatus.CONFLICT;
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body("Registration initiated");
+        return HttpStatus.CREATED;
     }
 
-    public ResponseEntity<?> confirmRegistration(UUID token) {
+    public HttpStatus confirmRegistration(UUID token) {
         Optional<PendingRegistration> pendingRegistrationOptional = registrationService.getPendingRegistration(token);
         if (pendingRegistrationOptional.isPresent()) {
             PendingRegistration pendingRegistration = pendingRegistrationOptional.get();
@@ -78,12 +78,12 @@ public class AuthenticationService {
                                 .passwordHash(pendingRegistration.getPasswordHash())
                         .build());
                 registrationService.removePendingRegistration(token);
-                return ResponseEntity.ok("Registration confirmed");
+                return HttpStatus.OK;
             } else {
-                return ResponseEntity.status(HttpStatus.GONE).build();
+                return HttpStatus.GONE;
             }
         } else {
-            return ResponseEntity.notFound().build();
+            return HttpStatus.NOT_FOUND;
         }
     }
 }

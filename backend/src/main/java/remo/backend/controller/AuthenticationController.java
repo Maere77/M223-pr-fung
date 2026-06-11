@@ -25,12 +25,12 @@ public class AuthenticationController {
 
     @GetMapping("/register/confirm/{token}")
     public ResponseEntity<?> confirm(@PathVariable UUID token) {
-        return authenticationService.confirmRegistration(token);
+        return ResponseEntity.status(authenticationService.confirmRegistration(token)).build();
     }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterDto registerDto) {
-        return authenticationService.registrateUser(registerDto);
+        return ResponseEntity.status(authenticationService.registrateUser(registerDto)).build();
     }
 
     @PostMapping("/login")
