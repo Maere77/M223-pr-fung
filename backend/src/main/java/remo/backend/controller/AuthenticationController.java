@@ -1,12 +1,16 @@
 package remo.backend.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import remo.backend.dto.AuthenticationDto;
+import remo.backend.dto.RegisterDto;
 import remo.backend.dto.TokenDto;
 import remo.backend.service.AuthenticationService;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -17,6 +21,16 @@ public class AuthenticationController {
     @Autowired
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
+    }
+
+    @GetMapping("/register/confirm/{token}")
+    public ResponseEntity<?> confirm(@PathVariable UUID token) {
+        return authenticationService.confirmRegistration(token);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody @Valid RegisterDto registerDto) {
+        return authenticationService.registrateUser(registerDto);
     }
 
     @PostMapping("/login")
