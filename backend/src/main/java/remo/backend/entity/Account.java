@@ -1,10 +1,8 @@
 package remo.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import remo.backend.security.Role;
 
 @Getter
 @Setter
@@ -22,4 +20,6 @@ public class Account {
     private String passwordHash;
     private String email;
     private String loginToken;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

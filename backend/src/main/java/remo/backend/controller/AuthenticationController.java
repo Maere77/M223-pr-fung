@@ -41,9 +41,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/protected")
-    public ResponseEntity<?> protectedResource(@RequestHeader("Authorization") String authHeader) {
-        return authenticationService.authorizeUser(authHeader)
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<String> protectedResource() {
+        return ResponseEntity.ok("Juhuu Token is valid");
     }
 }

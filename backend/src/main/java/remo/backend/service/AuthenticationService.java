@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import remo.backend.dto.AuthenticationDto;
@@ -12,12 +16,15 @@ import remo.backend.dto.TokenDto;
 import remo.backend.entity.Account;
 import remo.backend.entity.PendingRegistration;
 import remo.backend.repository.AccountRepository;
+import remo.backend.security.JwtService;
 
 import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+
+import static remo.backend.security.Role.USER;
 
 @Service
 public class AuthenticationService {
@@ -27,31 +34,31 @@ public class AuthenticationService {
     private final RegistrationService registrationService;
     private final MailService mailService;
     private final AccountService accountService;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthenticationService(AccountRepository accountRepository, PasswordEncoder passwordEncoder, RegistrationService registrationService, MailService mailService, AccountService accountService) {
+    public AuthenticationService(AccountRepository accountRepository, PasswordEncoder passwordEncoder, RegistrationService registrationService, MailService mailService, AccountService accountService, JwtService jwtService, AuthenticationManager authenticationManager) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.registrationService = registrationService;
         this.mailService = mailService;
         this.accountService = accountService;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
     }
 
     public Optional<TokenDto> authenticateUser(AuthenticationDto authDto) {
-        return accountRepository.findAccountByUsername(authDto.username())
-                .filter(account -> passwordEncoder.matches(
-                        authDto.passwordHash(),
-                        account.getPasswordHash()))
-                .map(account -> {
-                    String token = UUID.randomUUID().toString();
-                    account.setLoginToken(token);
-                    accountRepository.save(account);
-                    return new TokenDto(token);
-                });
-    }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authDto.username(),
+                        authDto.passwordHash()
+                )
+        );
 
-    public boolean authorizeUser(String token) {
-        return accountRepository.findAccountByLoginToken(token).isPresent();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtService.generateToken(authentication);
+        return Optional.of(new TokenDto(token));
     }
 
     public HttpStatus registrateUser(RegisterDto registerDto) {
@@ -76,6 +83,7 @@ public class AuthenticationService {
                                 .username(pendingRegistration.getEmail())
                                 .email(pendingRegistration.getEmail())
                                 .passwordHash(pendingRegistration.getPasswordHash())
+                                .role(USER)
                         .build());
                 registrationService.removePendingRegistration(token);
                 return HttpStatus.OK;

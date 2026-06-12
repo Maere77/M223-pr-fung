@@ -6,7 +6,8 @@ CREATE TABLE account
     username      VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(100) NOT NULL,
     email         VARCHAR(255) UNIQUE,
-    login_token   VARCHAR(255) DEFAULT NULL
+    login_token   VARCHAR(255) DEFAULT NULL,
+    role          VARCHAR(50) NOT NULL
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_account_username ON account(username);
