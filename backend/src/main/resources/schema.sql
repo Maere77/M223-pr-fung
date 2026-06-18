@@ -1,3 +1,11 @@
+CREATE TABLE user_profile (
+                              id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                              first_name VARCHAR(255),
+                              last_name VARCHAR(255),
+                              address VARCHAR(255),
+                              profile_img_url VARCHAR(512)
+);
+
 CREATE TABLE account
 (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -7,7 +15,14 @@ CREATE TABLE account
     password_hash VARCHAR(100) NOT NULL,
     email         VARCHAR(255) UNIQUE,
     login_token   VARCHAR(255) DEFAULT NULL,
-    role          VARCHAR(50) NOT NULL
+    role          VARCHAR(50) NOT NULL,
+
+    profile_id    BIGINT UNIQUE,
+
+    CONSTRAINT fk_account_profile
+        FOREIGN KEY (profile_id)
+            REFERENCES user_profile(id)
+            ON DELETE SET NULL
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_account_username ON account(username);

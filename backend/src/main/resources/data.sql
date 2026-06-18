@@ -1,9 +1,15 @@
+INSERT INTO user_profile (id, first_name, last_name, address, profile_img_url)
+VALUES
+    (1, 'Admin', 'User', 'Admin Street 1', NULL),
+    (2, 'Anna', 'Müller', 'Berlin 12', NULL),
+    (3, 'James', 'Bond', 'London HQ', NULL);
+
 -- Initial data for account table
 -- Passwords are Bcrypt hashes of the password 'pizza'.
-INSERT INTO account (first_name, last_name, username, password_hash, email, role) VALUES
-  ('Admin', 'User', 'admin', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'admin@example.com', 'USER'),
-  ('Anna', 'Müller', 'anna', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'anna@example.com', 'USER'),
-  ('James', 'Bond', 'james', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'james@example.com', 'USER');
+INSERT INTO account (first_name, last_name, username, password_hash, email, role, profile_id) VALUES
+  ('Admin', 'User', 'admin', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'admin@example.com', 'USER', 1),
+  ('Anna', 'Müller', 'anna', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'anna@example.com', 'USER', 2),
+  ('James', 'Bond', 'james', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'james@example.com', 'USER', 3);
 
 INSERT INTO groups (id, name, owner_id)
 VALUES

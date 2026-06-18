@@ -33,4 +33,8 @@ public class Account {
     @JsonIgnore
     @ManyToMany(mappedBy = "members")
     private List<Group> my_groups;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
+    private UserProfile userProfile;
 }

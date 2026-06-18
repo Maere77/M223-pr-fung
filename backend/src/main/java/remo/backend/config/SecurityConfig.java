@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/register/**").permitAll()
                         .requestMatchers("/auth/protected").hasRole("USER")
+                        .requestMatchers("/api/me/profile/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
