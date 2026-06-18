@@ -12,3 +12,36 @@ CREATE TABLE account
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_account_username ON account(username);
 CREATE INDEX IF NOT EXISTS idx_account_email ON account(email);
+
+CREATE TABLE groups (
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        owner_id BIGINT,
+                        CONSTRAINT fk_group_owner
+                            FOREIGN KEY (owner_id)
+                                REFERENCES account(id)
+);
+
+CREATE TABLE media (
+                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       media VARCHAR(255) NOT NULL,
+                       group_id BIGINT,
+                       CONSTRAINT fk_media_group
+                           FOREIGN KEY (group_id)
+                               REFERENCES groups(id)
+);
+
+CREATE TABLE members_groups (
+                                group_id BIGINT NOT NULL,
+                                member_id BIGINT NOT NULL,
+
+                                PRIMARY KEY (group_id, member_id),
+
+                                CONSTRAINT fk_members_groups_group
+                                    FOREIGN KEY (group_id)
+                                        REFERENCES groups(id),
+
+                                CONSTRAINT fk_members_groups_account
+                                    FOREIGN KEY (member_id)
+                                        REFERENCES account(id)
+);

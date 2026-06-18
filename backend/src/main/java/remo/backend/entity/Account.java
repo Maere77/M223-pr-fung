@@ -1,8 +1,11 @@
 package remo.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import remo.backend.security.Role;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,4 +25,12 @@ public class Account {
     private String loginToken;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "owner")
+    private List<Group> owned_groups;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "members")
+    private List<Group> my_groups;
 }
