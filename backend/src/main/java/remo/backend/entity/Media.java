@@ -21,6 +21,8 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String media;
+    private boolean sketch;
+    private boolean published;
 
     @JsonIgnore
     @ManyToOne
