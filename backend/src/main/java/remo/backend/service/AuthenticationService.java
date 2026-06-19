@@ -83,14 +83,14 @@ public class AuthenticationService {
         if (pendingRegistrationOptional.isPresent()) {
             PendingRegistration pendingRegistration = pendingRegistrationOptional.get();
             if (pendingRegistration.getCreatedAt().isAfter(Instant.now().minus(Duration.ofDays(1)))) {
-                UserProfile userProfile = userProfileRepository.save(new UserProfile(
+                UserProfile userProfile = new UserProfile(
                         null,
                         pendingRegistration.getFirstname(),
                         pendingRegistration.getLastname(),
                         "address",
-                        null,
+                        "img",
                         UNVERIFIED
-                ));
+                );
                 accountService.createAccount(Account.builder()
                                 .firstName(pendingRegistration.getFirstname())
                                 .lastName(pendingRegistration.getLastname())

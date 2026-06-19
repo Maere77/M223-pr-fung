@@ -29,3 +29,5 @@ VALUES
     (1, 3),
     (2, 2),
     (2, 3);
+
+ALTER TABLE user_profile ALTER COLUMN id RESTART WITH 100;

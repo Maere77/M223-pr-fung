@@ -18,12 +18,12 @@ CREATE TABLE account
     login_token   VARCHAR(255) DEFAULT NULL,
     role          VARCHAR(50) NOT NULL,
 
-    profile_id    BIGINT UNIQUE,
+    profile_id    BIGINT UNIQUE NOT NULL,
 
     CONSTRAINT fk_account_profile
         FOREIGN KEY (profile_id)
             REFERENCES user_profile(id)
-            ON DELETE SET NULL
+            ON DELETE CASCADE
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_account_username ON account(username);
