@@ -2,7 +2,6 @@ package remo.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import remo.backend.dto.MediaLikesDto;
 import remo.backend.entity.Account;
 import remo.backend.entity.Media;
@@ -70,5 +69,18 @@ public class MediaService {
                 : null;
 
         return new MediaLikesDto(mediaId, count, likedBy);
+    }
+//autocompletion für überprüfungs logik
+    public void publishMedia(Long mediaId, String username) {
+        Media media = mediaRepository.findById(mediaId).orElseThrow(() -> new RuntimeException("Media not found"));
+        if (!media.isSketch()) {
+            throw new IllegalStateException("Media is not published");
+        }
+        if (!groupSecurityService.isMediaOwner(mediaId, username)) {
+            throw new IllegalStateException("Unathorised");
+        }
+        media.setSketch(false);
+        media.setPublished(true);
+        mediaRepository.save(media);
     }
 }

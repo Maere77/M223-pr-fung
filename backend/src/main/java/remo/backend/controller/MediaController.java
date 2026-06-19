@@ -1,7 +1,6 @@
 package remo.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,7 +17,7 @@ public class MediaController {
     private MediaService mediaService;
 
     @GetMapping("/{mediaId}")
-    @PreAuthorize("@groupSecurityService.canViewMedia(#mediaId, authentication.name)")
+    @PreAuthorize("hasRole('COACH') && @groupSecurityService.canViewMedia(#mediaId, authentication.name)")
     public ResponseEntity<Media> getMediaById(@PathVariable Long mediaId) {
         return mediaService.getMediaById(mediaId)
                 .map(ResponseEntity::ok)
@@ -26,7 +25,7 @@ public class MediaController {
     }
 
     @PostMapping("/{mediaId}/like")
-    @PreAuthorize("@groupSecurityService.canViewMedia(#mediaId, authentication.name)")
+    @PreAuthorize("hasRole('COACH') && @groupSecurityService.canViewMedia(#mediaId, authentication.name)")
     public ResponseEntity<Void> likeMedia(@PathVariable Long mediaId, Authentication authentication) {
         mediaService.likeMedia(mediaId, authentication.getName());
         return ResponseEntity.ok().build();
@@ -44,5 +43,12 @@ public class MediaController {
     public ResponseEntity<MediaLikesDto> getMediaLikes(@PathVariable Long mediaId, Authentication authentication) {
         MediaLikesDto result = mediaService.getMediaLikes(mediaId, authentication.getName());
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{mediaId}/publish")
+    @PreAuthorize("@groupSecurityService.isMediaOwner(#mediaId, authentication.name)")
+    public ResponseEntity<Void> publishMedia(@PathVariable Long mediaId, Authentication authentication) {
+        mediaService.publishMedia(mediaId, authentication.getName());
+        return ResponseEntity.ok().build();
     }
 }
