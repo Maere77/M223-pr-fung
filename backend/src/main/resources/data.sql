@@ -11,12 +11,12 @@ INSERT INTO account (first_name, last_name, username, password_hash, email, role
   ('Anna', 'Müller', 'anna', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'anna@example.com', 'ADMIN', 2),
   ('James', 'Bond', 'james', '$2y$05$1zMf9eQgDCWqewuTi0J6ze325QbprMBdmvROTwJ8dXqseRJy6hKwu', 'james@example.com', 'USER', 3);
 
-INSERT INTO groups (id, name, owner_id)
+INSERT INTO groups (name, owner_id)
 VALUES
     ('Family', 1),
     ('Friends', 2);
 
-INSERT INTO media (id, media, group_id)
+INSERT INTO media (media, group_id)
 VALUES
     ('family_photo.jpg', 1),
     ('vacation_video.mp4', 1),
