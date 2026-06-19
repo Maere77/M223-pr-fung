@@ -14,6 +14,7 @@ import remo.backend.dto.AuthenticationDto;
 import remo.backend.dto.RegisterDto;
 import remo.backend.dto.TokenDto;
 import remo.backend.entity.Account;
+import remo.backend.entity.Like;
 import remo.backend.entity.PendingRegistration;
 import remo.backend.entity.ProfileStatus;
 import remo.backend.entity.UserProfile;
@@ -99,6 +100,7 @@ public class AuthenticationService {
                                 .passwordHash(pendingRegistration.getPasswordHash())
                                 .role(USER)
                                 .userProfile(userProfile)
+                                .like(Like.builder().countLikes(0).build())
                         .build());
                 registrationService.removePendingRegistration(token);
                 return HttpStatus.OK;
