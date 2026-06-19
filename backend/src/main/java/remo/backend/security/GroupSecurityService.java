@@ -14,6 +14,12 @@ public class GroupSecurityService {
     private final GroupRepository groupRepository;
     private final MediaRepository mediaRepository;
 
+    public boolean isMediaOwner(Long mediaId, String username) {
+        Media media = mediaRepository.findById(mediaId).orElseThrow(NullPointerException::new);
+        if (media.getGroup() == null) return false;
+        return isOwner(media.getGroup().getId(), username);
+    }
+
     public boolean canViewMedia(Long mediaId, String username) {
         Media media = mediaRepository.findById(mediaId)
                 .orElse(null);

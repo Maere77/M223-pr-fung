@@ -7,6 +7,11 @@ CREATE TABLE user_profile (
                               profile_status VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE likes (
+                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       likes_count INT NOT NULL
+);
+
 CREATE TABLE account
 (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -23,6 +28,13 @@ CREATE TABLE account
     CONSTRAINT fk_account_profile
         FOREIGN KEY (profile_id)
             REFERENCES user_profile(id)
+            ON DELETE CASCADE,
+
+    like_id BIGINT UNIQUE NOT NULL,
+
+    CONSTRAINT fk_like_account
+        FOREIGN KEY (like_id)
+            REFERENCES likes(id)
             ON DELETE CASCADE
 );
 
@@ -45,6 +57,16 @@ CREATE TABLE media (
                        CONSTRAINT fk_media_group
                            FOREIGN KEY (group_id)
                                REFERENCES groups(id)
+);
+
+CREATE TABLE media_likes (
+    media_id   BIGINT NOT NULL,
+    account_id BIGINT NOT NULL,
+    PRIMARY KEY (media_id, account_id),
+    CONSTRAINT fk_media_likes_media
+        FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE,
+    CONSTRAINT fk_media_likes_account
+        FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
 );
 
 CREATE TABLE members_groups (
